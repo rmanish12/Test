@@ -1,15 +1,17 @@
 import React, {Component} from 'react'
+import {BrowserRouter} from 'react-router-dom'
 
-import Header from './Header'
-
-import '../styles/App.css'
-import {Button} from 'react-bootstrap'
+import HomePage from './Homepage'
 
 class App extends Component {
     render() {
         return(
             <div>
-                <Header/>
+                <BrowserRouter>
+                    <div>
+                        <HomePage/>
+                    </div>
+                </BrowserRouter>
             </div>
         )
     }

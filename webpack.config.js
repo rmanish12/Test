@@ -5,7 +5,8 @@ module.exports = {
     entry: path.join(__dirname, 'src/client/index.js'),
     output: {
         path: path.join(__dirname,'./build'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
       },
     mode: process.env.NODE_ENV || 'development',
     module : {
@@ -36,6 +37,9 @@ module.exports = {
                 loaders: ['file-loader']
               }
         ]
+    },
+    devServer: {
+        historyApiFallback: true,
     },
     plugins: [
         new HtmlWebPackPlugin({

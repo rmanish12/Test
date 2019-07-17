@@ -10,4 +10,4 @@ export PORT=8000
 
 export SECRET_KEY=mysecretkey
 
-call npm run server
+npm run server
