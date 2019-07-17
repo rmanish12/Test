@@ -1,14 +1,75 @@
-const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
-const { User } = require('./db/config')
+const User  = require('./db/userSchema')
 
-const createUser = async (req, res) => {
+const SECRET_KEY = process.env.SECRET_KEY
+
+const createUser = (req, res) => {
+
+    var hashedPassword = bcrypt.hashSync(req.body.password, 8)
+
     user = {
         username: req.body.username,
-        password: req.body.password
+        password: hashedPassword
     }
 
-    const newUser = await User.create(user)
-
-    res.send(newUser)
+    User.create(user)
+        .then(() => {
+            var token = jwt.sign({
+                username: user.username,
+                password: user.password
+            }, SECRET_KEY, {
+                expiresIn: 86400 //24hr
+            })
+     
+            res.status(200).json({auth: true, token: token})
+        }).catch(() => {
+            return res.status(500).send('There was a problem registering user')
+        })
 }
+
+const getUser = (req, res) => {
+    User.findOne({where: {username: req.body.username}})
+        .then((user) => {
+            if(!user) {
+                return res.status(404).send('No user found')
+            }
+
+            res.status(200).send({auth: true, cookie: req.cookies})
+        })
+}
+
+const loginUser = (req, res) => {
+    User.findOne({where: {username: req.body.username}})
+        .then((user) => {
+            if(!user) {
+                return res.status(404).send('No user found')
+            }
+
+            var passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
+            if(!passwordIsValid) {
+                return res.status(401).send({auth: false, token: null, message: 'Password invalid'})
+            }
+    
+            var token = jwt.sign({ username: user.username }, SECRET_KEY, {
+                expiresIn: 86400 //24hr
+            })
+    
+            res.cookie('sessionToken',token , {
+                httpOnly: true,
+                maxAge: 86400
+            })
+
+            res.status(200).send({auth: true, token})
+        }).catch((err) => {
+            return res.status(500).send('Some internal error')
+        })
+}
+
+const logout = (req, res) => {
+    res.clearCookie('sessionToken')
+    res.status(200).send({auth: false, token: null})
+}
+
+module.exports = {createUser, getUser, loginUser, logout}

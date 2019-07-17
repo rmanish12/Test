@@ -1,6 +1,12 @@
 const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize('postgres://postgres:abcd@1234@localhost:5432/postgres')
+const DB_USER = process.env.DB_USER
+const DB_PASSWORD = process.env.DB_PASSWORD
+const DB_HOST = process.env.DB_HOST
+const DB_PORT = process.env.DB_PORT
+const DB_SCHEMA = process.env.DB_SCHEMA
+
+const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_SCHEMA}`)
 
 sequelize
   .authenticate()
@@ -11,18 +17,4 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-const User = sequelize.define('users', {
-    username: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    password: {
-        type: Sequelize.STRING
-    }
-});
-
-User.sync().then(() => {
-    // Table created    
-  });
-
-module.exports = { sequelize, User }
+module.exports = sequelize 
