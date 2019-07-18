@@ -1,6 +1,8 @@
 const path = require('path')
 const HtmlWebPackPlugin = require('html-webpack-plugin')
 
+const PORT = process.env.PORT
+
 module.exports = {
     entry: path.join(__dirname, 'src/client/index.js'),
     output: {
@@ -40,6 +42,12 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true,
+        proxy: {
+            "/api/*": {
+                target: `http://localhost:${PORT}/`,
+                secure: false
+            }
+        }
     },
     plugins: [
         new HtmlWebPackPlugin({
