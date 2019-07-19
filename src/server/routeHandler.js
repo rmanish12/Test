@@ -41,7 +41,9 @@ const getUser = (req, res) => {
 }
 
 const loginUser = (req, res) => {
-    User.findOne({where: {username: req.body.username}})
+    // User.findOne({where: {email: req.body.email}})
+    console.log(req.body.email)
+    User.findByPk(req.body.email)
         .then((user) => {
             if(!user) {
                 return res.status(404).send('No user found')
@@ -61,9 +63,9 @@ const loginUser = (req, res) => {
                 maxAge: 86400
             })
 
-            res.status(200).send({auth: true, token})
+            res.status(200).send({auth: true, token, user})
         }).catch((err) => {
-            return res.status(500).send('Some internal error')
+            return res.status(500).send(err)
         })
 }
 

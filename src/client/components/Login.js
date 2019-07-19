@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 
-import autobind from 'autobind'
+import autobind from 'react-autobind'
 import {Container, Col, Row, Card, Form, Button} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import '../styles/Login.css'
+import {onLogin} from '../action/actions'
 
 class Login extends Component {
 
@@ -18,9 +20,7 @@ class Login extends Component {
             errorBox: false
         }
 
-        this.onEmailChange = this.onEmailChange.bind(this)
-        this.onPasswordChange = this.onPasswordChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        autobind(this)
     }
 
     isNotEmpty() {
@@ -52,15 +52,11 @@ class Login extends Component {
     onSubmit(event){
         event.preventDefault()
 
-        if(this.state.email!='admin' && this.state.password!='admin') {
-            this.setState({
-                errorBox: true
-            })
-        } else{
-            this.setState({
-                errorBox: false
-            })
-        }
+        const {email, password} = this.state
+        console.log('Login: email: ', email, ' password: ', password)
+        this.props.onLogin(email, password)
+        this.props.history.push('/home')
+        
     }
 
     render() {
@@ -119,4 +115,10 @@ class Login extends Component {
     }
 }
 
-export default Login
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogin: (email, password) => dispatch(onLogin(email, password))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Login)

@@ -11,18 +11,18 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 
 //enable cross origin request
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-//   });
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
-app.post('/user', createUser)
+app.post('/api/user', createUser)
 
-app.get('/user', verifyToken, getUser)
+app.get('/api/user', verifyToken, getUser)
 
-app.post('/login', loginUser)
+app.post('/api/login', loginUser)
 
-app.get('/logout', logout)
+app.get('/api/logout', logout)
 
 module.exports = app

@@ -2,17 +2,19 @@ const Sequelize = require('sequelize')
 const sequelize = require('./config')
 
 const User = sequelize.define('users', {
-    username: {
+    email: {
         type: Sequelize.STRING,
         primaryKey: true
+    },
+    firstname: {
+        type: Sequelize.STRING
+    },
+    lastname: {
+        type: Sequelize.STRING
     },
     password: {
         type: Sequelize.STRING
     }
-});
-
-User.sync().then(() => {
-    // Table created    
 });
 
 module.exports = User

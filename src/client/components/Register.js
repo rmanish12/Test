@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 
+import autobind from 'react-autobind'
 import {Container, Col, Row, Card, Form, Button} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 
@@ -20,12 +21,7 @@ class Register extends Component {
             errorBox: false
         }
 
-        this.onFirstNameChange = this.onFirstNameChange.bind(this)
-        this.onLastNameChange = this.onLastNameChange.bind(this)
-        this.onEmailChange = this.onEmailChange.bind(this)
-        this.onPasswordChange = this.onPasswordChange.bind(this)
-        this.onConfirmPasswordChange = this.onConfirmPasswordChange.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
+        autobind(this)
     }
 
     onFirstNameChange(event) {
