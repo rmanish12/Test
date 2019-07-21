@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 
+import {connect} from 'react-redux'
 import autobind from 'react-autobind'
 import {Container, Col, Row, Card, Form, Button} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 
 import '../styles/Login.css'
+import {onRegister} from '../action/actions'
 
 class Register extends Component {
 
@@ -18,7 +20,8 @@ class Register extends Component {
             password: '',
             confirmPassword: '',
             buttonDisable: true,
-            errorBox: false
+            errorBox: false,
+            registerMsg: ''
         }
 
         autobind(this)
@@ -57,12 +60,24 @@ class Register extends Component {
     onSubmit(event) {
         event.preventDefault()
 
-        const {password, confirmPassword} = this.state
+        const {password, confirmPassword, firstname, lastname, email} = this.state
 
         if(password!==confirmPassword) {
             this.setState({
                 errorBox: true
             })
+        } else {
+            this.props.onRegister(email, password, firstname, lastname)
+
+            if(this.props.auth.err!=null) {
+                this.setState({
+                    registerMsg: this.props.auth.err
+                })
+            } else {
+                this.setState({
+                    registerMsg: this.props.auth.msg
+                })
+            }
         }
     }
 
@@ -140,6 +155,8 @@ class Register extends Component {
                                     <p>Password does not match.</p>
                                 </div>
 
+                                {this.state.registerMsg}
+
                                 <br/>
 
                                 <div className='help'>
@@ -155,4 +172,16 @@ class Register extends Component {
     }
 }
 
-export default Register
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onRegister: (email, password, firstname, lastname) => dispatch(onRegister(email, password, firstname, lastname))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register)

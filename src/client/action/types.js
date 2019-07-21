@@ -1,2 +1,5 @@
 export const LOGIN = 'LOGIN'
-export const REGISTER = 'REGISTER'
+export const REGISTER_SUCCESSFUL = 'REGISTER_SUCCESSFUL'
+export const REGISTER_ERROR = 'REGISTER_ERROR'
+export const LOGOUT = 'LOGOUT'
+export const GET_USER = 'GET_USER'

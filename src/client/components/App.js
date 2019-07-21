@@ -1,18 +1,14 @@
 import React, {Component} from 'react'
 import {BrowserRouter} from 'react-router-dom'
 
-import LandingPage from './LandingPage'
+import RoutingPage from './RoutingPage'
 
 class App extends Component {
     render() {
         return(
-            <div>
-                <BrowserRouter>
-                    <div>
-                        <LandingPage/>
-                    </div>
-                </BrowserRouter>
-            </div>
+            <BrowserRouter>
+                <RoutingPage/>
+            </BrowserRouter>
         )
     }
 }

@@ -23,6 +23,6 @@ app.get('/api/user', verifyToken, getUser)
 
 app.post('/api/login', loginUser)
 
-app.get('/api/logout', logout)
+app.post('/api/logout', logout)
 
 module.exports = app
