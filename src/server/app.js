@@ -17,9 +17,25 @@ app.use(function(req, res, next) {
     next();
   });
 
+app.get('/setcookie', function(req, res){
+    // setting cookies
+    res.cookie('username', 'john doe', { maxAge: 900000, httpOnly: true });
+    return res.send('Cookie has been set');
+});
+
+app.get('/getcookie', function(req, res) {
+    var username = req.cookies['username'];
+    if (username) {
+        return res.send(username);        
+    }
+
+    return res.send('No cookie found');
+});
+
 app.post('/api/user', createUser)
 
-app.get('/api/user', verifyToken, getUser)
+// app.get('/api/user', verifyToken, getUser)
+app.get('/api/user', getUser)
 
 app.post('/api/login', loginUser)
 

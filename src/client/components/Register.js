@@ -95,6 +95,18 @@ class Register extends Component {
         }
     }
 
+    isSuccessful() {
+        if(this.props.auth.message!=null) {
+            const style = this.props.auth.message==='Registered successfully'? 'valid' : 'invalid'
+            console.log(style)
+            return (
+                <div className={style}>
+                    <p>{this.props.auth.message}</p>
+                </div>
+            )
+        }
+    }
+
     render() {
         return(
             <Container>
@@ -155,7 +167,9 @@ class Register extends Component {
                                     <p>Password does not match.</p>
                                 </div>
 
-                                {this.state.registerMsg}
+                                <div>
+                                    {this.isSuccessful()}
+                                </div>
 
                                 <br/>
 

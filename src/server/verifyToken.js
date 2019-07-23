@@ -4,7 +4,8 @@ const SECRET_KEY = process.env.SECRET_KEY
 
 const verifyToken = (req, res, next) => {
     // var token = req.headers['x-access-token']
-    var token = req.cookie.sessionToken
+    console.log(req)
+    var token = req.cookies.sessionToken
 
     if(!token) {
         return res.status(403).send({auth: false, message: 'No token provided'})
@@ -15,8 +16,10 @@ const verifyToken = (req, res, next) => {
             return res.status(500).send({auth: false, message: 'Failed to authenticate token'})
         }
 
+        console.log(decoded)
         next()
     })
+    // next()
 }
 
 module.exports = verifyToken

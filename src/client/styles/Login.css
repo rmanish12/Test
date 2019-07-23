@@ -24,3 +24,9 @@
       background-color: mistyrose;
       font-variant: all-petite-caps
   }
+
+  .valid {
+    color: green;
+    background-color: darkseagreen;
+    font-variant: all-petite-caps
+  } 

@@ -1,14 +1,15 @@
 import React, {Component} from 'react'
-import {BrowserRouter} from 'react-router-dom'
+import {Router} from 'react-router-dom'
 
 import RoutingPage from './RoutingPage'
+import history from '../history'
 
 class App extends Component {
     render() {
         return(
-            <BrowserRouter>
+            <Router history={history}>
                 <RoutingPage/>
-            </BrowserRouter>
+            </Router>
         )
     }
 }

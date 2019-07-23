@@ -28,10 +28,10 @@ class Header extends Component {
                         </Nav>
                         <Nav>
                             <NavDropdown title={title} id="basic-nav-dropdown">
-                                <NavDropdown.Item onClick ={this.props.onLogout}>
-                                    {/* <Link to='/'  onClick={this.props.onLogout} className='link'>Logout</Link> */}
-                                    Logout
-                                </NavDropdown.Item>
+                                {/* <NavDropdown.Item onClick ={this.props.onLogout}> */}
+                                    <Link to='/'  onClick={this.props.onLogout} className='link'>Logout</Link>
+                                    {/* Logout */}
+                                {/* </NavDropdown.Item> */}
                             </NavDropdown>                
                         </Nav>
                     </Navbar.Collapse>

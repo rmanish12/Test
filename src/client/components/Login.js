@@ -53,10 +53,18 @@ class Login extends Component {
         event.preventDefault()
 
         const {email, password} = this.state
-        console.log('Login: email: ', email, ' password: ', password)
         this.props.onLogin(email, password)
-        this.props.history.push('/home')
-        
+
+    }
+
+    isError() {
+        if(this.props.auth.loginErrMsg!=null) {
+            return (
+                <div className='invalid' hidden={!this.state.errorBox}>
+                    <p>{this.props.auth.loginErrMsg}</p>
+                </div>
+            )
+        }    
     }
 
     render() {
@@ -96,12 +104,16 @@ class Login extends Component {
                                 
                                 <br/>
 
-                                <div className='invalid' hidden={!this.state.errorBox}>
-                                    <p>Invalid Credentials</p>
+                                <div>
+                                    {this.isError()}
+                                </div>
+
+                                <div className='invalid' >
+                                    <p>{this.props.auth.loginErrMsg}</p>
                                 </div>
 
                                 <div className='help'>
-                                    Forgot Password? <Link>Click Here</Link>
+                                    Forgot Password? <Link to=''>Click Here</Link>
                                     <br/>
                                     Create an account? <Link to='/register'>Click Here</Link>
                                 </div>
@@ -115,10 +127,16 @@ class Login extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         onLogin: (email, password) => dispatch(onLogin(email, password))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

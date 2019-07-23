@@ -19,40 +19,51 @@ const createUser = (req, res) => {
         role: req.body.role || 'USER'
     }
 
-    console.log('user: ', user)
-
     User.findByPk(req.body.email)
         .then((user) => {
             if(user) {
                 console.log('User exists')
-                res.status(400).send({err: 'User already exists'})
+                return res.status(400).send({message: 'User already exists'})
             }
         })
 
     User.create(user)
         .then(() => {
             var token = jwt.sign({
-                username: user.username
+                email: user.email
             }, SECRET_KEY, {
                 expiresIn: 86400 //24hr
             })
     
-            res.status(200).json({auth: true, token: token, msg: 'Registered successfully'})
+            return res.status(200).json({auth: true, token: token, name: user.firstname, role: user.role, message: 'Registered successfully'})
         }).catch((err) => {
-            return res.status(500).send({err: 'Some internal error', e: err})
+            return res.status(500).send({message: 'Some internal error'})
         })
 
 }
 
 const getUser = (req, res) => {
-    res.status(200).send({auth: true, cookie: req.cookies})
+    console.log(req)
+    var token = req.cookies.sessionToken
+
+    if(!token) {
+        return res.status(403).send({auth: false, message: 'No token provided'})
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if(err) {
+            return res.status(500).send({auth: false, message: 'Failed to authenticate token'})
+        }
+
+        res.status(200).send({auth: true, name: decoded.name, role: decoded.role})
+    })
 }
 
 const loginUser = (req, res) => {
     User.findByPk(req.body.email)
         .then((user) => {
             if(!user) {
-                return res.status(404).send('No user found')
+                return res.status(404).send({message: 'No user found'})
             }
 
             var passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
@@ -60,18 +71,24 @@ const loginUser = (req, res) => {
                 return res.status(401).send({auth: false, token: null, message: 'Password invalid'})
             }
     
-            var token = jwt.sign({ username: user.username, role: user.role }, SECRET_KEY, {
+            var token = jwt.sign({ email: user.email, name: user.firstname, role: user.role }, SECRET_KEY, {
                 expiresIn: 86400 //24hr
             })
     
-            res.cookie('sessionToken',token , {
-                httpOnly: true,
-                maxAge: 86400
-            })
+            // res.cookie('sessionToken',token , {
+            //     httpOnly: true,
+            //     maxAge: 86400
+            // })
 
-            res.status(200).send({auth: true, token})
+            res.cookie('sessionToken', token, {
+                httpOnly: true,
+                maxAge: 4 * 60 * 60 * 1000 // 4 hours
+              });
+
+            // res.redirect('/')
+            res.status(200).send({auth: true, token, name: user.firstname, role: user.role})
         }).catch((err) => {
-            return res.status(500).send(err)
+            return res.status(500).send({message: 'Some internal error'})
         })
 }
 

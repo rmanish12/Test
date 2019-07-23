@@ -1,6 +1,8 @@
-import {LOGIN, REGISTER_SUCCESSFUL, REGISTER_ERROR, LOGOUT, GET_USER} from './types'
+import {LOGIN_SUCCESSFUL, LOGIN_ERROR,  REGISTER_SUCCESSFUL, REGISTER_ERROR, LOGOUT, GET_USER, REGISTER} from './types'
 
 import axios from 'axios'
+import _ from 'lodash'
+import history from '../history' 
 
 const headers = {
     'Content-Type': 'application/json;charset=UTF-8',
@@ -8,33 +10,44 @@ const headers = {
 }
 
 export const onLogin = (email, password) => dispatch => {
-    console.log('Action: email: ', email, ' password: ', password)
-
     axios.post('http://localhost:8000/api/login', {email, password}, headers)
         .then((response) => {
-            console.log('data: ', response)
+                dispatch({
+                    type: LOGIN_SUCCESSFUL,
+                    payload: {
+                        name: response.data.name,
+                        role: response.data.role
+                    }
+                }
+            )
+            history.push('/home')
+        }, (err) => {
             dispatch({
-                type: LOGIN
-            }
-        )
+                type: LOGIN_ERROR,
+                payload: {
+                    errMsg: _.get(err, 'response.data.message')
+                }
+            })
         })
 }
 
 export const fetchUserDetails = () => dispatch => {
     axios.get('http://localhost:8000/api/user', headers)
         .then((response) => {
+            console.log(response)
             dispatch({
                 type: GET_USER,
                 payload: {
                     name: response.data.user.name,
                     role: response.data.user.role
                 }
+            }, (err) => {
+                console.log(err)
             })
         })
 }
 
 export const onLogout = () => dispatch => {
-    console.log('Logout action')
     axios.post('http://localhost:8000/api/logout', {}, headers)
         .then(() => {
             dispatch({
@@ -44,29 +57,23 @@ export const onLogout = () => dispatch => {
 }
 
 export const onRegister = (email, password, firstname, lastname) => dispatch => {
-    const newUser = {
-        email,
-        password,
-        firstname,
-        lastname
-    }
 
-    axios.post('http://localhost:8000/api/user', headers, newUser)
+    axios.post('http://localhost:8000/api/user', {email, password, firstname, lastname}, headers)
         .then((response) => {
-            if(response.data.err){
-                dispatch({
-                    type: REGISTER_SUCCESSFUL,
-                    payload: {
-                        err: response.data.err
-                    }
-                })
-            } else {
-                dispatch({
-                    type: REGISTER_ERROR,
-                    payload: {
-                        msg: response.data.msg
-                    }
-                })
-            }
+            console.log(response) 
+            dispatch({
+                type: REGISTER,
+                payload: {
+                    message: response.data.message
+                }
+            })
+        }, (err) => {
+            console.log(_.get(err, 'response.data.message'))
+            dispatch({
+                type: REGISTER,
+                payload: {
+                    message: _.get(err, 'response.data.message')
+                }
+            })
         })
 }

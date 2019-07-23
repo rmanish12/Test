@@ -45,8 +45,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchUserDetails: () => dispatch(onFetchUserDetails())
+        fetchUserDetails: () => dispatch(fetchUserDetails())
     }
 }
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
